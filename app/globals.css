@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-display: var(--font-space-grotesk);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains);
+
+  --color-base-950: #050b16;
+  --color-base-900: #0a1526;
+  --color-base-850: #0d1c33;
+  --color-base-800: #11233d;
+  --color-base-700: #17304f;
+  --color-base-600: #204066;
+  --color-base-500: #2c5786;
+
+  --color-line: #1c3252;
+
+  --color-ink-100: #f2f6fc;
+  --color-ink-300: #c3d3e8;
+  --color-ink-500: #8aa0bf;
+  --color-ink-700: #5c7290;
+
+  --color-bright-300: #8fd6ff;
+  --color-bright-400: #5cc4ff;
+  --color-bright-500: #2fb0ff;
+  --color-bright-600: #0f8de0;
+
+  --color-mint-400: #3fe0b0;
+  --color-amber-400: #ffb84d;
+  --color-coral-400: #ff6b6b;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-base-950);
+  color: var(--color-ink-100);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-bright-500);
+  color: var(--color-base-950);
+}
+
+/* subtle film-frame texture used behind auth + page headers */
+.frame-grid {
+  background-image:
+    linear-gradient(var(--color-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-line) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(ellipse at top, black, transparent 75%);
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: var(--color-base-600);
+  border-radius: 999px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+.pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
