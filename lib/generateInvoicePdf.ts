@@ -5,7 +5,7 @@ import type { Invoice, Client } from "./types";
 const currency = (n: number) =>
   n.toLocaleString("en-US", { style: "currency", currency: "USD" });
 
-export function downloadInvoicePdf(invoice: Invoice, client: Client | undefined, studioName = "Reel Ops Studio") {
+export function downloadInvoicePdf(invoice: Invoice, client: Client | undefined, studioName = "My Dashboard") {
   const doc = new jsPDF({ unit: "pt", format: "a4" });
   const marginX = 48;
 

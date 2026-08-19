@@ -12,9 +12,7 @@ import {
   Film,
   LogOut,
   TrendingUp,
-  UserCog,
   Settings,
-  Sparkles,
 } from "lucide-react";
 
 const NAV = [
@@ -24,13 +22,9 @@ const NAV = [
   { href: "/services", label: "Outgoing services", icon: Wrench },
   { href: "/earnings", label: "Earnings", icon: TrendingUp },
   { href: "/calendar", label: "Calendar", icon: CalendarDays },
-  { href: "/agent", label: "AI Assistant", icon: Sparkles },
 ];
 
-const NAV_BOTTOM = [
-  { href: "/users", label: "Users", icon: UserCog },
-  { href: "/settings", label: "Settings", icon: Settings },
-];
+const NAV_BOTTOM = [{ href: "/settings", label: "Settings", icon: Settings }];
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -51,7 +45,7 @@ export default function Sidebar() {
         <div className="h-8 w-8 rounded-lg bg-base-850 border border-line flex items-center justify-center">
           <Film className="h-4 w-4 text-bright-400" strokeWidth={1.75} />
         </div>
-        <span className="font-display text-[15px] text-ink-100 tracking-tight">Reel Ops</span>
+        <span className="font-display text-[15px] text-ink-100 tracking-tight">My Dashboard</span>
       </div>
 
       <nav className="flex-1 px-3 py-5 space-y-1">

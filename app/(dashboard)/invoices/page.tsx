@@ -16,6 +16,13 @@ const inputClass =
 const currency = (n: number) =>
   n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
+const STATUS_SELECT_STYLE: Record<InvoiceStatus, string> = {
+  paid: "border-mint-400/30 text-mint-400",
+  sent: "border-amber-400/30 text-amber-400",
+  overdue: "border-coral-400/30 text-coral-400",
+  draft: "border-line text-ink-500",
+};
+
 export default function InvoicesPage() {
   const { data: clients } = useSupabaseTable<Client>("clients", mockClients);
   const { data: invoices, loading, addItem, updateItem, deleteItem } = useSupabaseTable<Invoice>(
@@ -120,7 +127,7 @@ export default function InvoicesPage() {
               const client = clients.find((c) => c.id === inv.client_id);
               const statusBorder = {
                 paid: "border-l-mint-400",
-                sent: "border-l-bright-500",
+                sent: "border-l-amber-400",
                 overdue: "border-l-coral-400",
                 draft: "border-l-line",
               }[inv.status];
@@ -143,7 +150,7 @@ export default function InvoicesPage() {
                   <select
                     value={inv.status}
                     onChange={(e) => updateItem(inv.id, { status: e.target.value as InvoiceStatus })}
-                    className="bg-transparent text-xs cursor-pointer outline-none"
+                    className={`w-fit rounded-full border px-2.5 py-1 text-xs font-medium capitalize bg-transparent cursor-pointer outline-none ${STATUS_SELECT_STYLE[inv.status]}`}
                   >
                     {["draft", "sent", "paid", "overdue"].map((s) => (
                       <option key={s} value={s} className="bg-base-900 text-ink-100">

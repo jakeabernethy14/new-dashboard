@@ -1,4 +1,4 @@
--- Reel Ops schema
+-- My Dashboard schema
 -- Paste this whole file into Supabase Dashboard > SQL Editor > New query > Run.
 -- Safe to re-run: uses "if not exists" / "or replace" where possible.
 

@@ -110,14 +110,14 @@ export default function DashboardPage() {
                 <AreaChart data={chartData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
                   <defs>
                     <linearGradient id="revenueFill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#2fb0ff" stopOpacity={0.35} />
-                      <stop offset="100%" stopColor="#2fb0ff" stopOpacity={0} />
+                      <stop offset="0%" stopColor="#ff2438" stopOpacity={0.35} />
+                      <stop offset="100%" stopColor="#ff2438" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid stroke="#1c3252" strokeDasharray="3 3" vertical={false} />
-                  <XAxis dataKey="label" stroke="#5c7290" fontSize={11} tickLine={false} axisLine={false} />
+                  <CartesianGrid stroke="#242424" strokeDasharray="3 3" vertical={false} />
+                  <XAxis dataKey="label" stroke="#8f8f8f" fontSize={11} tickLine={false} axisLine={false} />
                   <YAxis
-                    stroke="#5c7290"
+                    stroke="#8f8f8f"
                     fontSize={11}
                     tickLine={false}
                     axisLine={false}
@@ -125,15 +125,15 @@ export default function DashboardPage() {
                   />
                   <Tooltip
                     contentStyle={{
-                      background: "#0d1c33",
-                      border: "1px solid #1c3252",
+                      background: "#131313",
+                      border: "1px solid #242424",
                       borderRadius: 8,
                       fontSize: 12,
                     }}
                     labelStyle={{ color: "#c3d3e8" }}
                     formatter={(v) => [currency(Number(v)), "Revenue"]}
                   />
-                  <Area type="monotone" dataKey="revenue" stroke="#2fb0ff" strokeWidth={2} fill="url(#revenueFill)" />
+                  <Area type="monotone" dataKey="revenue" stroke="#ff2438" strokeWidth={2} fill="url(#revenueFill)" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>

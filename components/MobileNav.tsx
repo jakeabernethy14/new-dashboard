@@ -9,9 +9,7 @@ import {
   Wrench,
   CalendarDays,
   TrendingUp,
-  UserCog,
   Settings,
-  Sparkles,
 } from "lucide-react";
 
 const NAV = [
@@ -21,8 +19,6 @@ const NAV = [
   { href: "/services", label: "Services", icon: Wrench },
   { href: "/earnings", label: "Earnings", icon: TrendingUp },
   { href: "/calendar", label: "Calendar", icon: CalendarDays },
-  { href: "/agent", label: "AI", icon: Sparkles },
-  { href: "/users", label: "Users", icon: UserCog },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 

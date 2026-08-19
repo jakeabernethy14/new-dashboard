@@ -20,7 +20,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Reel Ops — Studio Dashboard",
+  title: "My Dashboard",
   description: "Client, invoice and production dashboard for your video editing business.",
 };
 

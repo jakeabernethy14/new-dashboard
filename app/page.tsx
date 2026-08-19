@@ -77,14 +77,14 @@ export default function LoginPage() {
   return (
     <div className="relative min-h-screen bg-base-950 flex items-center justify-center px-6 overflow-hidden">
       <div className="absolute inset-0 frame-grid" />
-      <div className="absolute -top-40 left-1/2 -translate-x-1/2 h-96 w-[36rem] rounded-full bg-bright-500/15 blur-[120px]" />
+      <div className="absolute -top-40 left-1/2 -translate-x-1/2 h-96 w-[36rem] rounded-full bg-bright-500/6 blur-[140px]" />
 
       <div className="relative w-full max-w-sm">
         <div className="flex flex-col items-center mb-8">
           <div className="h-11 w-11 rounded-xl bg-base-850 border border-line flex items-center justify-center mb-4">
             <Film className="h-5 w-5 text-bright-400" strokeWidth={1.75} />
           </div>
-          <h1 className="font-display text-xl text-ink-100 tracking-tight">Reel Ops</h1>
+          <h1 className="font-display text-xl text-ink-100 tracking-tight">My Dashboard</h1>
           <p className="text-sm text-ink-500 mt-1">Studio dashboard for your edit business</p>
         </div>
 

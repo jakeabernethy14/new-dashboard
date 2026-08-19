@@ -1,56 +1,66 @@
 @import "tailwindcss";
 
+/* Fonts need "inline" because they reference next/font's own CSS variables
+   (var(--font-inter) etc) — Tailwind needs the literal chain resolved at
+   build time here. Colors deliberately do NOT use inline below, so the
+   light/dark theme toggle can override them live at runtime. */
 @theme inline {
   --font-display: var(--font-space-grotesk);
   --font-sans: var(--font-inter);
   --font-mono: var(--font-jetbrains);
+}
 
-  --color-base-950: #050b16;
-  --color-base-900: #0a1526;
-  --color-base-850: #0d1c33;
-  --color-base-800: #11233d;
-  --color-base-700: #17304f;
-  --color-base-600: #204066;
-  --color-base-500: #2c5786;
+@theme {
+  --color-base-950: #060606;
+  --color-base-900: #0d0d0d;
+  --color-base-850: #131313;
+  --color-base-800: #1a1a1a;
+  --color-base-700: #242424;
+  --color-base-600: #303030;
+  --color-base-500: #474747;
 
-  --color-line: #1c3252;
+  --color-line: #242424;
 
-  --color-ink-100: #f2f6fc;
-  --color-ink-300: #c3d3e8;
-  --color-ink-500: #8aa0bf;
-  --color-ink-700: #5c7290;
+  --color-ink-100: #f5f5f5;
+  --color-ink-300: #c9c9c9;
+  --color-ink-500: #8f8f8f;
+  --color-ink-700: #5c5c5c;
 
-  --color-bright-300: #8fe4ff;
-  --color-bright-400: #3ad3ff;
-  --color-bright-500: #00c2ff;
-  --color-bright-600: #0098d6;
+  --color-bright-300: #ff8791;
+  --color-bright-400: #ff4d5e;
+  --color-bright-500: #ff2438;
+  --color-bright-600: #d40f22;
 
   --color-mint-400: #3fe0b0;
   --color-amber-400: #ffb84d;
   --color-coral-400: #ff6b6b;
 }
 
-/* Light theme overrides, toggled via data-theme="light" on <html> */
+/* Light theme overrides, toggled via data-theme="light" on <html>.
+   These re-declare the SAME custom properties from the plain @theme block
+   above (not @theme inline), so every utility class that already compiled
+   to e.g. `background-color: var(--color-base-950)` picks up the new value
+   automatically at runtime — no rebuild needed. */
 [data-theme="light"] {
-  --color-base-950: #f4f7fb;
+  --color-base-950: #f5f5f5;
   --color-base-900: #ffffff;
-  --color-base-850: #eef2f8;
-  --color-base-800: #e3e9f2;
-  --color-base-700: #d3dced;
-  --color-base-600: #b9c7e0;
-  --color-base-500: #93a8cc;
+  --color-base-850: #f0f0f0;
+  --color-base-800: #e6e6e6;
+  --color-base-700: #d6d6d6;
+  --color-base-600: #bdbdbd;
+  --color-base-500: #969696;
 
-  --color-line: #dbe3f0;
+  --color-line: #dedede;
 
-  --color-ink-100: #101828;
-  --color-ink-300: #33415c;
-  --color-ink-500: #5c6d8a;
-  --color-ink-700: #8898b5;
+  --color-ink-100: #141414;
+  --color-ink-300: #3d3d3d;
+  --color-ink-500: #6b6b6b;
+  --color-ink-700: #9a9a9a;
 
-  --color-bright-300: #0098d6;
-  --color-bright-400: #0087c2;
-  --color-bright-500: #0073a8;
-  --color-bright-600: #005c85;
+  --color-bright-300: #d40f22;
+  --color-bright-400: #c40d1f;
+  --color-bright-500: #b30b1c;
+  --color-bright-600: #8f0916;
 }
 
 html {
@@ -80,7 +90,8 @@ body {
     linear-gradient(var(--color-line) 1px, transparent 1px),
     linear-gradient(90deg, var(--color-line) 1px, transparent 1px);
   background-size: 28px 28px;
-  mask-image: radial-gradient(ellipse at top, black, transparent 75%);
+  mask-image: radial-gradient(ellipse at top, black, transparent 65%);
+  opacity: 0.35;
 }
 
 .scrollbar-thin::-webkit-scrollbar {

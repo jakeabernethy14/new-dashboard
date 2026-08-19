@@ -1,7 +1,7 @@
 const STYLES: Record<string, string> = {
   active: "bg-mint-400/10 text-mint-400 border-mint-400/25",
   paid: "bg-mint-400/10 text-mint-400 border-mint-400/25",
-  sent: "bg-bright-500/10 text-bright-300 border-bright-500/25",
+  sent: "bg-amber-400/10 text-amber-400 border-amber-400/25",
   draft: "bg-ink-700/10 text-ink-500 border-line",
   overdue: "bg-coral-400/10 text-coral-400 border-coral-400/25",
   past: "bg-ink-700/10 text-ink-500 border-line",

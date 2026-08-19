@@ -4,7 +4,7 @@ import PageHeader from "@/components/PageHeader";
 import { useAppSettings } from "@/lib/useAppSettings";
 import { useTheme } from "@/lib/ThemeProvider";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
-import { Sun, Moon, ExternalLink, Mail, UserPlus } from "lucide-react";
+import { Sun, Moon, UserPlus } from "lucide-react";
 
 function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
   return (
@@ -73,21 +73,6 @@ export default function SettingsPage() {
               checked={settings.allow_registration}
               onChange={(v) => updateSettings({ allow_registration: v })}
             />
-          </SettingRow>
-
-          <SettingRow
-            icon={Mail}
-            title="Email confirmation on sign-up"
-            description="This is a Supabase project-level setting, not something the app itself can flip — the anon key isn't allowed to change it for security reasons. Turn it off in your Supabase dashboard under Authentication → Sign In / Providers → Email."
-          >
-            <a
-              href="https://supabase.com/dashboard/project/_/auth/providers"
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-1.5 text-xs text-bright-400 hover:text-bright-300 border border-bright-500/25 rounded-lg px-3 py-1.5 transition-colors"
-            >
-              Open in Supabase <ExternalLink className="h-3 w-3" />
-            </a>
           </SettingRow>
         </div>
 

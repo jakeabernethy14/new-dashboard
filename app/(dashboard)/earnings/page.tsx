@@ -119,15 +119,15 @@ export default function EarningsPage() {
             <div className="h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={buckets} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
-                  <CartesianGrid stroke="#1c3252" strokeDasharray="3 3" vertical={false} />
-                  <XAxis dataKey="label" stroke="#5c7290" fontSize={11} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#5c7290" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => `$${v}`} />
+                  <CartesianGrid stroke="#242424" strokeDasharray="3 3" vertical={false} />
+                  <XAxis dataKey="label" stroke="#8f8f8f" fontSize={11} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#8f8f8f" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => `$${v}`} />
                   <Tooltip
-                    contentStyle={{ background: "#0d1c33", border: "1px solid #1c3252", borderRadius: 8, fontSize: 12 }}
+                    contentStyle={{ background: "#131313", border: "1px solid #242424", borderRadius: 8, fontSize: 12 }}
                     labelStyle={{ color: "#c3d3e8" }}
                     formatter={(v) => [currency(Number(v)), "Earnings"]}
                   />
-                  <Bar dataKey="total" fill="#00c2ff" radius={[6, 6, 0, 0]} />
+                  <Bar dataKey="total" fill="#ff2438" radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
