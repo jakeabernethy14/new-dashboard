@@ -11,6 +11,10 @@ import {
   CalendarDays,
   Film,
   LogOut,
+  TrendingUp,
+  UserCog,
+  Settings,
+  Sparkles,
 } from "lucide-react";
 
 const NAV = [
@@ -18,7 +22,14 @@ const NAV = [
   { href: "/clients", label: "Clients", icon: Users },
   { href: "/invoices", label: "Invoices", icon: FileText },
   { href: "/services", label: "Outgoing services", icon: Wrench },
+  { href: "/earnings", label: "Earnings", icon: TrendingUp },
   { href: "/calendar", label: "Calendar", icon: CalendarDays },
+  { href: "/agent", label: "AI Assistant", icon: Sparkles },
+];
+
+const NAV_BOTTOM = [
+  { href: "/users", label: "Users", icon: UserCog },
+  { href: "/settings", label: "Settings", icon: Settings },
 ];
 
 export default function Sidebar() {
@@ -62,6 +73,26 @@ export default function Sidebar() {
           );
         })}
       </nav>
+
+      <div className="px-3 pt-2 pb-3 border-t border-line space-y-1">
+        {NAV_BOTTOM.map(({ href, label, icon: Icon }) => {
+          const active = pathname === href;
+          return (
+            <Link
+              key={href}
+              href={href}
+              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
+                active
+                  ? "bg-bright-500/10 text-bright-300 border border-bright-500/20"
+                  : "text-ink-500 hover:text-ink-100 hover:bg-base-850 border border-transparent"
+              }`}
+            >
+              <Icon className="h-4 w-4" strokeWidth={1.75} />
+              {label}
+            </Link>
+          );
+        })}
+      </div>
 
       <div className="px-3 pb-5">
         <button

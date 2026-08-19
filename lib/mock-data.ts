@@ -1,4 +1,4 @@
-import type { Client, Invoice, Service, Note, CalendarEvent } from "./types";
+import type { Client, Invoice, Service, Note, CalendarEvent, TeamMember } from "./types";
 
 const today = new Date();
 const iso = (offsetDays: number) => {
@@ -9,11 +9,16 @@ const iso = (offsetDays: number) => {
 const dateOnly = (offsetDays: number) => iso(offsetDays).slice(0, 10);
 
 export const mockClients: Client[] = [
-  { id: "c1", name: "Maya Chen", company: "Northline Films", email: "maya@northlinefilms.co", phone: "555-0114", status: "active", notes: "Prefers Premiere project files, quick turnarounds.", created_at: dateOnly(-120) },
-  { id: "c2", name: "Diego Reyes", company: "Reyes Real Estate", email: "diego@reyesrealty.com", phone: "555-0128", status: "active", notes: "Monthly property walkthrough edits.", created_at: dateOnly(-90) },
-  { id: "c3", name: "Priya Anand", company: "Anand Fitness Studio", email: "priya@anandfit.com", phone: "555-0142", status: "active", notes: "Weekly reels, needs captions burned in.", created_at: dateOnly(-60) },
-  { id: "c4", name: "Jordan Blake", company: "Blake Weddings", email: "jordan@blakeweddings.com", phone: "555-0157", status: "past", notes: "One-off wedding highlight reel, delivered.", created_at: dateOnly(-200) },
-  { id: "c5", name: "Sam Okafor", company: "Okafor Music", email: "sam@okaformusic.com", phone: "555-0163", status: "lead", notes: "Discussing a music video package for Q3.", created_at: dateOnly(-5) },
+  { id: "c1", name: "Maya Chen", company: "Northline Films", email: "maya@northlinefilms.co", phone: "555-0114", description: "Prefers Premiere project files, quick turnarounds.", created_at: dateOnly(-120) },
+  { id: "c2", name: "Diego Reyes", company: "Reyes Real Estate", email: "diego@reyesrealty.com", phone: "555-0128", description: "Monthly property walkthrough edits.", created_at: dateOnly(-90) },
+  { id: "c3", name: "Priya Anand", company: "Anand Fitness Studio", email: "priya@anandfit.com", phone: "555-0142", description: "Weekly reels, needs captions burned in.", created_at: dateOnly(-60) },
+  { id: "c4", name: "Jordan Blake", company: "Blake Weddings", email: "jordan@blakeweddings.com", phone: "555-0157", description: "One-off wedding highlight reel, delivered.", created_at: dateOnly(-200) },
+  { id: "c5", name: "Sam Okafor", company: "Okafor Music", email: "sam@okaformusic.com", phone: "555-0163", description: "Discussing a music video package for Q3.", created_at: dateOnly(-5) },
+];
+
+export const mockTeamMembers: TeamMember[] = [
+  { id: "t1", name: "Jake Abernethy", email: "jake@studio.com", role: "admin", invited_at: dateOnly(-300) },
+  { id: "t2", name: "Alex Rivera", email: "alex@studio.com", role: "editor", invited_at: dateOnly(-40) },
 ];
 
 export const mockInvoices: Invoice[] = [

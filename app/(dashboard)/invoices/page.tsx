@@ -1,12 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Download } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import StatusBadge from "@/components/StatusBadge";
 import Modal from "@/components/Modal";
 import { useSupabaseTable } from "@/lib/useSupabaseTable";
 import { mockClients, mockInvoices } from "@/lib/mock-data";
+import { downloadInvoicePdf } from "@/lib/generateInvoicePdf";
 import type { Client, Invoice, InvoiceStatus } from "@/lib/types";
 
 const inputClass =
@@ -115,44 +116,62 @@ export default function InvoicesPage() {
               <span>Status</span>
               <span></span>
             </div>
-            {filtered.map((inv) => (
-              <div
-                key={inv.id}
-                className="grid grid-cols-2 sm:grid-cols-[1fr_1.4fr_0.9fr_0.9fr_0.9fr_auto] gap-3 px-5 py-4 text-sm border-b border-line last:border-0 items-center"
-              >
-                <span className="font-mono text-ink-300 text-xs">{inv.invoice_number}</span>
-                <div className="col-span-2 sm:col-span-1">
-                  <p className="text-ink-100">{clientName(inv.client_id)}</p>
-                  {inv.description && (
-                    <p className="text-xs text-ink-500 mt-0.5 line-clamp-1">{inv.description}</p>
-                  )}
-                </div>
-                <span className="font-mono text-ink-100 tabular-nums">{currency(inv.amount)}</span>
-                <span className="text-xs text-ink-500">
-                  {new Date(inv.due_date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                </span>
-                <select
-                  value={inv.status}
-                  onChange={(e) => updateItem(inv.id, { status: e.target.value as InvoiceStatus })}
-                  className="bg-transparent text-xs cursor-pointer outline-none"
+            {filtered.map((inv) => {
+              const client = clients.find((c) => c.id === inv.client_id);
+              const statusBorder = {
+                paid: "border-l-mint-400",
+                sent: "border-l-bright-500",
+                overdue: "border-l-coral-400",
+                draft: "border-l-line",
+              }[inv.status];
+              return (
+                <div
+                  key={inv.id}
+                  className={`grid grid-cols-2 sm:grid-cols-[1fr_1.4fr_0.9fr_0.9fr_0.9fr_auto] gap-3 px-5 py-4 text-sm border-b border-l-2 border-line last:border-b-0 items-center ${statusBorder}`}
                 >
-                  {["draft", "sent", "paid", "overdue"].map((s) => (
-                    <option key={s} value={s} className="bg-base-900 text-ink-100">
-                      {s}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  onClick={() => deleteItem(inv.id)}
-                  className="justify-self-end h-7 w-7 flex items-center justify-center rounded-md text-ink-700 hover:text-coral-400 hover:bg-coral-400/10 transition-colors cursor-pointer"
-                >
-                  <Trash2 className="h-3.5 w-3.5" />
-                </button>
-                <div className="sm:hidden col-span-2">
-                  <StatusBadge status={inv.status} />
+                  <span className="font-mono text-ink-300 text-xs">{inv.invoice_number}</span>
+                  <div className="col-span-2 sm:col-span-1">
+                    <p className="text-ink-100">{clientName(inv.client_id)}</p>
+                    {inv.description && (
+                      <p className="text-xs text-ink-500 mt-0.5 line-clamp-1">{inv.description}</p>
+                    )}
+                  </div>
+                  <span className="font-mono text-ink-100 tabular-nums">{currency(inv.amount)}</span>
+                  <span className="text-xs text-ink-500">
+                    {new Date(inv.due_date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                  </span>
+                  <select
+                    value={inv.status}
+                    onChange={(e) => updateItem(inv.id, { status: e.target.value as InvoiceStatus })}
+                    className="bg-transparent text-xs cursor-pointer outline-none"
+                  >
+                    {["draft", "sent", "paid", "overdue"].map((s) => (
+                      <option key={s} value={s} className="bg-base-900 text-ink-100">
+                        {s}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="flex items-center gap-1 justify-self-end">
+                    <button
+                      onClick={() => downloadInvoicePdf(inv, client)}
+                      title="Download PDF"
+                      className="h-7 w-7 flex items-center justify-center rounded-md text-ink-500 hover:text-bright-400 hover:bg-bright-500/10 transition-colors cursor-pointer"
+                    >
+                      <Download className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      onClick={() => deleteItem(inv.id)}
+                      className="h-7 w-7 flex items-center justify-center rounded-md text-ink-700 hover:text-coral-400 hover:bg-coral-400/10 transition-colors cursor-pointer"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                  <div className="sm:hidden col-span-2">
+                    <StatusBadge status={inv.status} />
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Plus, Trash2, ExternalLink } from "lucide-react";
+import { Plus, Trash2, Pencil, ExternalLink } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import StatusBadge from "@/components/StatusBadge";
 import Modal from "@/components/Modal";
@@ -24,6 +24,17 @@ function monthlyEquivalent(s: Service) {
   return 0;
 }
 
+const emptyForm = {
+  name: "",
+  category: "",
+  cost: "",
+  billing_cycle: "monthly" as BillingCycle,
+  next_billing_date: "",
+  status: "active" as Service["status"],
+  url: "",
+  notes: "",
+};
+
 export default function ServicesPage() {
   const { data: services, loading, addItem, deleteItem, updateItem } = useSupabaseTable<Service>(
     "services",
@@ -31,37 +42,43 @@ export default function ServicesPage() {
     { orderColumn: "next_billing_date" }
   );
   const [open, setOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [form, setForm] = useState(emptyForm);
 
-  const monthlyTotal = useMemo(
-    () => services.reduce((sum, s) => sum + monthlyEquivalent(s), 0),
-    [services]
-  );
+  const monthlyTotal = useMemo(() => services.reduce((sum, s) => sum + monthlyEquivalent(s), 0), [services]);
   const yearlyTotal = monthlyTotal * 12;
 
-  const [form, setForm] = useState({
-    name: "",
-    category: "",
-    cost: "",
-    billing_cycle: "monthly" as BillingCycle,
-    next_billing_date: "",
-    status: "active" as Service["status"],
-    url: "",
-    notes: "",
-  });
+  function openAdd() {
+    setEditingId(null);
+    setForm(emptyForm);
+    setOpen(true);
+  }
 
-  async function handleAdd(e: React.FormEvent) {
-    e.preventDefault();
-    await addItem({ ...form, cost: parseFloat(form.cost || "0") } as Partial<Service>);
+  function openEdit(s: Service) {
+    setEditingId(s.id);
     setForm({
-      name: "",
-      category: "",
-      cost: "",
-      billing_cycle: "monthly",
-      next_billing_date: "",
-      status: "active",
-      url: "",
-      notes: "",
+      name: s.name,
+      category: s.category ?? "",
+      cost: String(s.cost),
+      billing_cycle: s.billing_cycle,
+      next_billing_date: s.next_billing_date ?? "",
+      status: s.status,
+      url: s.url ?? "",
+      notes: s.notes ?? "",
     });
+    setOpen(true);
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const payload = { ...form, cost: parseFloat(form.cost || "0") } as Partial<Service>;
+    if (editingId) {
+      await updateItem(editingId, payload);
+    } else {
+      await addItem(payload);
+    }
+    setForm(emptyForm);
+    setEditingId(null);
     setOpen(false);
   }
 
@@ -72,7 +89,7 @@ export default function ServicesPage() {
         subtitle="Software, storage, stock libraries and other tools you pay for"
         action={
           <button
-            onClick={() => setOpen(true)}
+            onClick={openAdd}
             className="flex items-center gap-1.5 rounded-lg bg-bright-500 hover:bg-bright-400 text-base-950 text-sm font-semibold px-3.5 py-2 transition-colors cursor-pointer"
           >
             <Plus className="h-4 w-4" strokeWidth={2.5} />
@@ -94,64 +111,74 @@ export default function ServicesPage() {
             No services tracked yet.
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {services.map((s) => (
-              <div
-                key={s.id}
-                className="group relative rounded-xl border border-line bg-base-900/60 p-5 hover:border-bright-500/30 transition-colors"
-              >
-                <button
-                  onClick={() => deleteItem(s.id)}
-                  className="absolute top-4 right-4 h-6 w-6 flex items-center justify-center rounded-md text-ink-700 hover:text-coral-400 hover:bg-coral-400/10 opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
-                >
-                  <Trash2 className="h-3.5 w-3.5" />
-                </button>
-                <div className="flex items-start justify-between pr-8">
-                  <div>
-                    <p className="font-medium text-ink-100 flex items-center gap-1.5">
-                      {s.name}
-                      {s.url && (
-                        <a href={s.url} target="_blank" rel="noreferrer" className="text-ink-700 hover:text-bright-400">
-                          <ExternalLink className="h-3 w-3" />
-                        </a>
-                      )}
-                    </p>
-                    {s.category && <p className="text-xs text-ink-500 mt-0.5">{s.category}</p>}
-                  </div>
-                </div>
-                <div className="mt-3 flex items-center gap-2">
-                  <select
-                    value={s.status}
-                    onChange={(e) => updateItem(s.id, { status: e.target.value as Service["status"] })}
-                    className="bg-transparent outline-none cursor-pointer"
-                  >
-                    <option value="active" className="bg-base-900">active</option>
-                    <option value="paused" className="bg-base-900">paused</option>
-                    <option value="cancelled" className="bg-base-900">cancelled</option>
-                  </select>
-                </div>
-                <div className="mt-1">
-                  <StatusBadge status={s.status} />
-                </div>
-                <div className="mt-4 flex items-baseline justify-between">
-                  <span className="font-mono text-lg text-ink-100">{currency(s.cost)}</span>
-                  <span className="text-xs text-ink-500">/{s.billing_cycle === "one-time" ? "one-time" : s.billing_cycle === "monthly" ? "mo" : "yr"}</span>
-                </div>
-                {s.next_billing_date && (
-                  <p className="text-xs text-ink-500 mt-1">
-                    Next charge {new Date(s.next_billing_date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                  </p>
-                )}
-                {s.notes && <p className="mt-3 text-xs text-ink-500 border-t border-line pt-3">{s.notes}</p>}
-              </div>
-            ))}
+          <div className="rounded-xl border border-line bg-base-900/60 overflow-hidden overflow-x-auto scrollbar-thin">
+            <table className="w-full text-sm min-w-[760px]">
+              <thead>
+                <tr className="border-b border-line text-left text-xs font-medium text-ink-700">
+                  <th className="px-5 py-3 font-medium">Service</th>
+                  <th className="px-5 py-3 font-medium">Category</th>
+                  <th className="px-5 py-3 font-medium">Cost</th>
+                  <th className="px-5 py-3 font-medium">Next charge</th>
+                  <th className="px-5 py-3 font-medium">Status</th>
+                  <th className="px-5 py-3 font-medium w-20"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {services.map((s) => (
+                  <tr key={s.id} className="group border-b border-line last:border-0 hover:bg-base-850/50 transition-colors">
+                    <td className="px-5 py-3.5">
+                      <p className="text-ink-100 font-medium flex items-center gap-1.5">
+                        {s.name}
+                        {s.url && (
+                          <a href={s.url} target="_blank" rel="noreferrer" className="text-ink-700 hover:text-bright-400">
+                            <ExternalLink className="h-3 w-3" />
+                          </a>
+                        )}
+                      </p>
+                      {s.notes && <p className="text-xs text-ink-500 mt-0.5 line-clamp-1">{s.notes}</p>}
+                    </td>
+                    <td className="px-5 py-3.5 text-ink-500">{s.category || "—"}</td>
+                    <td className="px-5 py-3.5">
+                      <span className="font-mono text-ink-100">{currency(s.cost)}</span>
+                      <span className="text-xs text-ink-500">
+                        /{s.billing_cycle === "one-time" ? "one-time" : s.billing_cycle === "monthly" ? "mo" : "yr"}
+                      </span>
+                    </td>
+                    <td className="px-5 py-3.5 text-ink-500 text-xs">
+                      {s.next_billing_date
+                        ? new Date(s.next_billing_date).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+                        : "—"}
+                    </td>
+                    <td className="px-5 py-3.5">
+                      <StatusBadge status={s.status} />
+                    </td>
+                    <td className="px-5 py-3.5">
+                      <div className="flex items-center gap-1 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={() => openEdit(s)}
+                          className="h-7 w-7 flex items-center justify-center rounded-md text-ink-500 hover:text-bright-400 hover:bg-bright-500/10 transition-colors cursor-pointer"
+                        >
+                          <Pencil className="h-3.5 w-3.5" />
+                        </button>
+                        <button
+                          onClick={() => deleteItem(s.id)}
+                          className="h-7 w-7 flex items-center justify-center rounded-md text-ink-500 hover:text-coral-400 hover:bg-coral-400/10 transition-colors cursor-pointer"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
 
       {open && (
-        <Modal title="Add outgoing service" onClose={() => setOpen(false)}>
-          <form onSubmit={handleAdd} className="space-y-3">
+        <Modal title={editingId ? "Edit service" : "Add outgoing service"} onClose={() => setOpen(false)}>
+          <form onSubmit={handleSubmit} className="space-y-3">
             <input
               required
               placeholder="Service name (e.g. Adobe Creative Cloud)"
@@ -195,6 +222,15 @@ export default function ServicesPage() {
                 onChange={(e) => setForm({ ...form, next_billing_date: e.target.value })}
               />
             </div>
+            <select
+              className={inputClass}
+              value={form.status}
+              onChange={(e) => setForm({ ...form, status: e.target.value as Service["status"] })}
+            >
+              <option value="active">Active</option>
+              <option value="paused">Paused</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
             <input
               placeholder="Website URL (optional)"
               className={inputClass}
@@ -212,7 +248,7 @@ export default function ServicesPage() {
               type="submit"
               className="w-full rounded-lg bg-bright-500 hover:bg-bright-400 text-base-950 font-semibold text-sm py-2.5 transition-colors cursor-pointer"
             >
-              Add service
+              {editingId ? "Save changes" : "Add service"}
             </button>
           </form>
         </Modal>

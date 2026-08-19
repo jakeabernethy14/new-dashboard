@@ -20,18 +20,45 @@
   --color-ink-500: #8aa0bf;
   --color-ink-700: #5c7290;
 
-  --color-bright-300: #8fd6ff;
-  --color-bright-400: #5cc4ff;
-  --color-bright-500: #2fb0ff;
-  --color-bright-600: #0f8de0;
+  --color-bright-300: #8fe4ff;
+  --color-bright-400: #3ad3ff;
+  --color-bright-500: #00c2ff;
+  --color-bright-600: #0098d6;
 
   --color-mint-400: #3fe0b0;
   --color-amber-400: #ffb84d;
   --color-coral-400: #ff6b6b;
 }
 
+/* Light theme overrides, toggled via data-theme="light" on <html> */
+[data-theme="light"] {
+  --color-base-950: #f4f7fb;
+  --color-base-900: #ffffff;
+  --color-base-850: #eef2f8;
+  --color-base-800: #e3e9f2;
+  --color-base-700: #d3dced;
+  --color-base-600: #b9c7e0;
+  --color-base-500: #93a8cc;
+
+  --color-line: #dbe3f0;
+
+  --color-ink-100: #101828;
+  --color-ink-300: #33415c;
+  --color-ink-500: #5c6d8a;
+  --color-ink-700: #8898b5;
+
+  --color-bright-300: #0098d6;
+  --color-bright-400: #0087c2;
+  --color-bright-500: #0073a8;
+  --color-bright-600: #005c85;
+}
+
 html {
   color-scheme: dark;
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
 }
 
 body {
@@ -39,6 +66,7 @@ body {
   color: var(--color-ink-100);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 ::selection {

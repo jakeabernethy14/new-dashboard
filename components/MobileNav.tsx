@@ -2,14 +2,28 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users, FileText, Wrench, CalendarDays } from "lucide-react";
+import {
+  LayoutDashboard,
+  Users,
+  FileText,
+  Wrench,
+  CalendarDays,
+  TrendingUp,
+  UserCog,
+  Settings,
+  Sparkles,
+} from "lucide-react";
 
 const NAV = [
   { href: "/dashboard", label: "Home", icon: LayoutDashboard },
   { href: "/clients", label: "Clients", icon: Users },
   { href: "/invoices", label: "Invoices", icon: FileText },
   { href: "/services", label: "Services", icon: Wrench },
+  { href: "/earnings", label: "Earnings", icon: TrendingUp },
   { href: "/calendar", label: "Calendar", icon: CalendarDays },
+  { href: "/agent", label: "AI", icon: Sparkles },
+  { href: "/users", label: "Users", icon: UserCog },
+  { href: "/settings", label: "Settings", icon: Settings },
 ];
 
 export default function MobileNav() {
@@ -17,14 +31,14 @@ export default function MobileNav() {
 
   return (
     <nav className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-base-900/95 border-t border-line backdrop-blur-sm">
-      <div className="flex items-stretch justify-between px-1">
+      <div className="flex items-stretch overflow-x-auto scrollbar-thin px-1">
         {NAV.map(({ href, label, icon: Icon }) => {
           const active = pathname === href;
           return (
             <Link
               key={href}
               href={href}
-              className={`flex flex-1 flex-col items-center gap-1 py-2.5 text-[10px] transition-colors ${
+              className={`flex shrink-0 basis-[68px] flex-col items-center gap-1 py-2.5 text-[10px] transition-colors ${
                 active ? "text-bright-400" : "text-ink-700"
               }`}
             >

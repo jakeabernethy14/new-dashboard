@@ -1,18 +1,43 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
+import { createClient, isSupabaseConfigured, setRememberMe as persistRememberMe } from "@/lib/supabase/client";
 import { Film, Loader2 } from "lucide-react";
+
+const LOCAL_SETTINGS_KEY = "reel-ops-app-settings";
 
 export default function LoginPage() {
   const router = useRouter();
   const [mode, setMode] = useState<"sign-in" | "sign-up">("sign-in");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [registrationAllowed, setRegistrationAllowed] = useState(true);
+
+  useEffect(() => {
+    async function checkRegistration() {
+      if (!isSupabaseConfigured) {
+        try {
+          const saved = localStorage.getItem(LOCAL_SETTINGS_KEY);
+          if (saved) setRegistrationAllowed(JSON.parse(saved).allow_registration ?? true);
+        } catch {
+          // ignore, default stays true
+        }
+        return;
+      }
+      const supabase = createClient();
+      const { data } = await supabase.from("app_settings").select("allow_registration").limit(1).maybeSingle();
+      if (data && !data.allow_registration) {
+        setRegistrationAllowed(false);
+        setMode("sign-in");
+      }
+    }
+    checkRegistration();
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -25,6 +50,7 @@ export default function LoginPage() {
     }
 
     setLoading(true);
+    persistRememberMe(rememberMe);
     const supabase = createClient();
 
     if (mode === "sign-in") {
@@ -63,26 +89,30 @@ export default function LoginPage() {
         </div>
 
         <div className="bg-base-900/80 border border-line rounded-2xl p-6 backdrop-blur-sm shadow-[0_0_0_1px_rgba(47,176,255,0.03)]">
-          <div className="flex rounded-lg bg-base-850 p-1 mb-6 text-sm">
-            <button
-              type="button"
-              onClick={() => setMode("sign-in")}
-              className={`flex-1 rounded-md py-1.5 font-medium transition-colors cursor-pointer ${
-                mode === "sign-in" ? "bg-bright-500 text-base-950" : "text-ink-500 hover:text-ink-300"
-              }`}
-            >
-              Sign in
-            </button>
-            <button
-              type="button"
-              onClick={() => setMode("sign-up")}
-              className={`flex-1 rounded-md py-1.5 font-medium transition-colors cursor-pointer ${
-                mode === "sign-up" ? "bg-bright-500 text-base-950" : "text-ink-500 hover:text-ink-300"
-              }`}
-            >
-              Create account
-            </button>
-          </div>
+          {registrationAllowed ? (
+            <div className="flex rounded-lg bg-base-850 p-1 mb-6 text-sm">
+              <button
+                type="button"
+                onClick={() => setMode("sign-in")}
+                className={`flex-1 rounded-md py-1.5 font-medium transition-colors cursor-pointer ${
+                  mode === "sign-in" ? "bg-bright-500 text-base-950" : "text-ink-500 hover:text-ink-300"
+                }`}
+              >
+                Sign in
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode("sign-up")}
+                className={`flex-1 rounded-md py-1.5 font-medium transition-colors cursor-pointer ${
+                  mode === "sign-up" ? "bg-bright-500 text-base-950" : "text-ink-500 hover:text-ink-300"
+                }`}
+              >
+                Create account
+              </button>
+            </div>
+          ) : (
+            <p className="text-center text-sm font-medium text-ink-100 mb-6">Sign in</p>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -108,6 +138,18 @@ export default function LoginPage() {
                 className="w-full rounded-lg bg-base-850 border border-line px-3 py-2.5 text-sm text-ink-100 placeholder:text-ink-700 outline-none focus:border-bright-500 focus:ring-1 focus:ring-bright-500 transition-colors"
               />
             </div>
+
+            {mode === "sign-in" && (
+              <label className="flex items-center gap-2 text-xs text-ink-500 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="h-3.5 w-3.5 rounded border-line bg-base-850 accent-bright-500 cursor-pointer"
+                />
+                Remember me on this device
+              </label>
+            )}
 
             {error && (
               <p className="text-xs text-coral-400 bg-coral-400/10 border border-coral-400/20 rounded-lg px-3 py-2">

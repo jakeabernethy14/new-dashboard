@@ -1,13 +1,10 @@
-export type ClientStatus = "active" | "past" | "lead";
-
 export type Client = {
   id: string;
   name: string;
   company: string | null;
   email: string | null;
   phone: string | null;
-  status: ClientStatus;
-  notes: string | null;
+  description: string | null;
   created_at: string;
 };
 
@@ -57,3 +54,19 @@ export type CalendarEvent = {
   end_time: string | null;
   client_id: string | null;
 };
+
+export type TeamRole = "admin" | "editor" | "viewer";
+
+export type TeamMember = {
+  id: string;
+  name: string;
+  email: string;
+  role: TeamRole;
+  invited_at: string;
+};
+
+export type AppSettings = {
+  allow_registration: boolean;
+  theme_default: "dark" | "light";
+};
+

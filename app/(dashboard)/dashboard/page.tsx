@@ -40,7 +40,13 @@ export default function DashboardPage() {
     () => invoices.filter((i) => i.status === "sent" || i.status === "overdue").reduce((s, i) => s + i.amount, 0),
     [invoices]
   );
-  const activeClients = clients.filter((c) => c.status === "active").length;
+  const newClientsThisMonth = useMemo(() => {
+    const now = new Date();
+    return clients.filter((c) => {
+      const d = new Date(c.created_at);
+      return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+    }).length;
+  }, [clients]);
   const monthlyOutgoing = useMemo(
     () =>
       services.reduce((s, svc) => {
@@ -88,11 +94,10 @@ export default function DashboardPage() {
       <PageHeader title="Dashboard" subtitle="Here's how the studio is tracking." />
 
       <div className="px-6 md:px-8 pb-10 space-y-6">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <KpiCard label="Total revenue" value={currency(totalRevenue)} sub="All paid invoices" icon={DollarSign} accent="mint" />
-          <KpiCard label="Outstanding" value={currency(outstanding)} sub="Sent + overdue" icon={Clock} accent="amber" />
-          <KpiCard label="Active clients" value={String(activeClients)} sub={`${clients.length} total`} icon={Users} accent="bright" />
-          <KpiCard label="Monthly outgoing" value={currency(monthlyOutgoing)} sub="Active subscriptions" icon={Wallet} accent="coral" />
+          <KpiCard label="Monthly expenses" value={currency(monthlyOutgoing)} sub="Active subscriptions" icon={Wallet} accent="coral" />
+          <KpiCard label="Total clients" value={String(clients.length)} sub={newClientsThisMonth > 0 ? `${newClientsThisMonth} added this month` : "No new clients this month"} icon={Users} accent="bright" />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
